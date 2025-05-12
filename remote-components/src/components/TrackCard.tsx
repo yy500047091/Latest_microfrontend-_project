@@ -1,4 +1,3 @@
-// components/TrackCard.tsx
 import React from 'react';
 import {
   Card,
@@ -16,16 +15,18 @@ import type { Track } from './dummydata';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
-  boxShadow: theme.shadows[2],
+  boxShadow: theme.shadows[1],
   overflow: 'hidden',
   position: 'relative',
   transition: 'transform 0.2s ease-in-out',
   height: '100%',
   display: 'flex',
   flexDirection: 'column',
+  backgroundColor: theme.palette.grey[900], // Dark background for track cards
+  color: theme.palette.grey[300], // Light text color
   '&:hover': {
-    transform: 'scale(1.03)',
-    boxShadow: theme.shadows[4],
+    transform: 'scale(1.02)',
+    boxShadow: theme.shadows[3],
   },
 }));
 
@@ -37,7 +38,7 @@ const formatDuration = (ms: number) => {
 
 interface TrackCardProps {
   track: Track;
-  onSelect: (song: Track) => void; // Add this line
+  onSelect: (song: Track) => void;
 }
 
 const TrackCard: React.FC<TrackCardProps> = ({ track, onSelect }) => {
@@ -48,23 +49,23 @@ const TrackCard: React.FC<TrackCardProps> = ({ track, onSelect }) => {
       {track.album.images?.length > 0 && (
         <CardMedia
           component="img"
-          height="180"
+          height="140"
           image={track.album.images[0].url}
           alt={track.name}
         />
       )}
-      <CardContent sx={{ flexGrow: 1, p: 2 }}>
+      <CardContent sx={{ flexGrow: 1, p: 1 }}>
         <Typography
           gutterBottom
           variant="h6"
           component="div"
           sx={{
-            fontSize: '1rem',
+            fontSize: '0.9rem',
             fontWeight: 'bold',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
-            mb: 0.5,
+            mb: 0.3,
           }}
         >
           {track.name}
@@ -74,27 +75,27 @@ const TrackCard: React.FC<TrackCardProps> = ({ track, onSelect }) => {
           variant="body2"
           color="text.secondary"
           sx={{
-            mb: 1,
+            mb: 0.5,
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
-            fontSize: '0.8rem',
+            fontSize: '0.7rem',
           }}
         >
           {track.artists.map(artist => artist.name).join(", ")}
         </Typography>
 
-        <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
+        <Stack direction="row" spacing={0.5} sx={{ mb: 0.5 }}>
           <Chip
             label={track.album.name}
             size="small"
             variant="outlined"
-            sx={{ fontSize: '0.7rem' }}
+            sx={{ fontSize: '0.6rem', color: theme.palette.grey[300], borderColor: theme.palette.grey[500] }}
           />
           <Chip
             label={formatDuration(track.duration_ms)}
             size="small"
-            sx={{ fontSize: '0.7rem' }}
+            sx={{ fontSize: '0.6rem', color: theme.palette.grey[300] }}
           />
         </Stack>
       </CardContent>
@@ -103,20 +104,21 @@ const TrackCard: React.FC<TrackCardProps> = ({ track, onSelect }) => {
         aria-label="play/pause"
         sx={{
           position: 'absolute',
-          top: 10,
-          right: 10,
-          backgroundColor: 'rgba(0,0,0,0.7)',
+          top: 8,
+          right: 8,
+          backgroundColor: 'rgba(0,0,0,0.6)',
           color: 'white',
+          padding: '4px',
           '&:hover': {
             backgroundColor: theme.palette.primary.main,
           }
         }}
         onClick={(event) => {
-          event.stopPropagation(); // Prevent card click when play is clicked
+          event.stopPropagation();
           console.log('Play track:', track.name);
         }}
       >
-        <PlayArrowIcon />
+        <PlayArrowIcon sx={{ fontSize: '1rem' }} />
       </IconButton>
     </StyledCard>
   );
