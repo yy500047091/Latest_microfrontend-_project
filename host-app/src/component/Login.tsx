@@ -41,7 +41,7 @@ const Login = () => {
     e.preventDefault();
     if (validateForm()) {
       localStorage.setItem("userRole", role);
-      alert(`Logged in as: ${username} (Role: ${role})`);
+      // alert(`Logged in as: ${username} (Role: ${role})`);
       navigate('/dashboard');
     }
   };
