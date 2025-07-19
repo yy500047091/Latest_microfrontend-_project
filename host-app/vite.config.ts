@@ -9,9 +9,9 @@ export default defineConfig({
     federation({
       name: 'host-app',
       remotes: {
-        remoteComponents: "http://localhost:5001/assets/remoteEntry.js", // Match the name from the remote's config
+        remote_app: "http://localhost:5001/assets/remoteEntry.js", 
       },
-      shared: ['react', 'react-dom'], // Share dependencies if needed
+      shared: ['react', 'react-dom'], 
     }),
   ],
   build: {
@@ -21,6 +21,6 @@ export default defineConfig({
     cssCodeSplit: false,
   },
   server: {
-    port: 5173, // Example port for the host app
+    port: 5174, 
   }
 });

@@ -37,14 +37,16 @@ const Login = () => {
     return isValid;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (validateForm()) {
-      localStorage.setItem("userRole", role);
-      // alert(`Logged in as: ${username} (Role: ${role})`);
-      navigate('/dashboard');
-    }
-  };
+// In Login.tsx
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+  if (validateForm()) {
+    localStorage.setItem("userRole", role);
+    // Add username to localStorage if needed
+    localStorage.setItem("username", username);
+    navigate('/dashboard', { replace: true }); // Use replace to prevent back navigation to login
+  }
+};
 
   return (
     <div

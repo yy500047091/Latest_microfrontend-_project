@@ -1,215 +1,78 @@
 // host-app/src/pages/Dashboard.tsx
-import React, { lazy, Suspense, useEffect, useState } from "react";
-import { Typography, Box } from "@mui/material";
+import  { lazy, Suspense, useEffect, useState } from "react";
+import { Typography, Box, Button, AppBar, Toolbar } from "@mui/material";
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+ // Logout icon
 
-const RemoteApp = lazy(() => import("remoteComponents/App"));
+// Dynamically import the remote App component
+
+const RemoteApp = lazy(() => import("remote_app/App1")); // Must match remote's name
 
 const Dashboard = () => {
-  const [userRole, setUserRole] = useState<string | null>();
-  const [isAddingSong, setIsAddingSong] = useState(false);
-  const [newSongTitle, setNewSongTitle] = useState("");
-  const [newSongArtist, setNewSongArtist] = useState("");
-  const [newSongAlbum, setNewSongAlbum] = useState("");
+  const navigate = useNavigate(); // Initialize navigate hook
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
+    // Retrieve the user role from local storage
     const storedRole = localStorage.getItem("userRole");
     setUserRole(storedRole);
   }, []);
 
-  const handleAddSongSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    console.log("New Song Details:", {
-      title: newSongTitle,
-      artist: newSongArtist,
-      album: newSongAlbum,
-    });
-    setIsAddingSong(false);
-    setNewSongTitle("");
-    setNewSongArtist("");
-    setNewSongAlbum("");
+  const handleLogout = () => {
+    localStorage.clear(); // Clear all items from local storage
+    navigate('/'); // Navigate back to the login page (root route)
+    console.log('User logged out. Local storage cleared and redirected.');
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-        backgroundColor: "#121212",
-        color: "#b3b3b3",
-        backgroundImage: `url('/technology-7086601_1280.jpg')`,
-        backgroundSize: "cover", // Make the image cover the entire container
-        backgroundPosition: "center", // Center the image
-      }}
-    >
-      {/* Header */}
-      <Box sx={{ p: 3, textAlign: "center" }}>
-        <Typography variant="h5" component="h1" color="primary">
-          Welcome to Music Library
-        </Typography>
-      </Box>
-
-      {/* Main Content */}
-      <Box sx={{ flexGrow: 1, p: 3 }}>
-        {userRole === "admin" && !isAddingSong && (
-          <Box sx={{ mb: 2 }}>
-            <button
-              onClick={() => setIsAddingSong(true)}
-              style={{
-                padding: "10px",
-                backgroundColor: "#1db954",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
+    <div className="flex flex-col min-h-screen bg-gray-900 text-gray-300">
+      {/* Header with AppBar and Logout Button */}
+      <AppBar position="static" sx={{ bgcolor: 'rgba(0, 0, 0, 0.7)', backdropFilter: 'blur(5px)' }} className="shadow-lg">
+        <Toolbar className="flex justify-between items-center px-4 py-2">
+          <Typography variant="h6" component="div" className="text-white font-semibold">
+            Music Library Dashboard
+          </Typography>
+          <Box className="flex items-center space-x-4">
+            {userRole && (
+              <Typography variant="subtitle1" className="text-gray-400">
+                Logged in as: <span className="font-bold capitalize">{userRole}</span>
+              </Typography>
+            )}
+            <Button
+              color="inherit"
+              onClick={handleLogout}
+              className="flex items-center space-x-2 bg-red-600 hover:bg-red-700 rounded-md py-2 px-4 text-white shadow-md transition duration-300 ease-in-out transform hover:scale-105"
             >
-              Add Song
-            </button>
+              {/* <ExitToAppIcon className="text-white" /> */}
+              <span className="hidden sm:inline">Logout</span>
+            </Button>
           </Box>
-        )}
+        </Toolbar>
+      </AppBar>
 
-        {userRole === "admin" && isAddingSong && (
-          <Box
-            sx={{
-              mb: 2,
-              p: 2,
-              border: "1px solid #282828",
-              borderRadius: "8px",
-            }}
+      {/* Main Content Area */}
+      <Box className="flex-grow p-4 md:p-6 lg:p-8 flex items-center justify-center bg-cover bg-center"
+           style={{ backgroundImage: `url('https://placehold.co/1920x1080/1a1a1a/cccccc?text=Music+Background')` }}>
+        <Box className="bg-gray-800 bg-opacity-90 rounded-xl shadow-2xl p-4 md:p-6 lg:p-8 w-full max-w-7xl mx-auto">
+          {/* Conditional rendering of RemoteApp based on userRole is now done INSIDE RemoteApp */}
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center h-64 text-2xl text-blue-400">
+                Loading Music Library...
+              </div>
+            }
           >
-            <Typography variant="h6" color="inherit" mb={1}>
-              Add New Song
-            </Typography>
-            <form onSubmit={handleAddSongSubmit}>
-              <Box sx={{ mb: 1 }}>
-                <label
-                  htmlFor="title"
-                  style={{ display: "block", marginBottom: "5px" }}
-                >
-                  Title:
-                </label>
-                <input
-                  type="text"
-                  id="title"
-                  value={newSongTitle}
-                  onChange={(e) => setNewSongTitle(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "8px",
-                    borderRadius: "4px",
-                    border: "1px solid #444",
-                    backgroundColor: "#282828",
-                    color: "#b3b3b3",
-                  }}
-                  required
-                />
-              </Box>
-              <Box sx={{ mb: 1 }}>
-                <label
-                  htmlFor="artist"
-                  style={{ display: "block", marginBottom: "5px" }}
-                >
-                  Artist:
-                </label>
-                <input
-                  type="text"
-                  id="artist"
-                  value={newSongArtist}
-                  onChange={(e) => setNewSongArtist(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "8px",
-                    borderRadius: "4px",
-                    border: "1px solid #444",
-                    backgroundColor: "#282828",
-                    color: "#b3b3b3",
-                  }}
-                  required
-                />
-              </Box>
-              <Box sx={{ mb: 1 }}>
-                <label
-                  htmlFor="album"
-                  style={{ display: "block", marginBottom: "5px" }}
-                >
-                  Album:
-                </label>
-                <input
-                  type="text"
-                  id="album"
-                  value={newSongAlbum}
-                  onChange={(e) => setNewSongAlbum(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "8px",
-                    borderRadius: "4px",
-                    border: "1px solid #444",
-                    backgroundColor: "#282828",
-                    color: "#b3b3b3",
-                  }}
-                  required
-                />
-              </Box>
-              <Box sx={{ mt: 2 }}>
-                <button
-                  type="submit"
-                  style={{
-                    padding: "10px 20px",
-                    backgroundColor: "#1db954",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                    marginRight: "10px",
-                  }}
-                >
-                  Add
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsAddingSong(false)}
-                  style={{
-                    padding: "10px 20px",
-                    backgroundColor: "#444",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                  }}
-                >
-                  Cancel
-                </button>
-              </Box>
-            </form>
-          </Box>
-        )}
-
-        <Suspense
-          fallback={
-            <Typography color="inherit">Loading Music Player...</Typography>
-          }
-        >
-          {userRole === "admin" ? (
-            <RemoteApp />
-          ) : (
-            <Typography
-              variant="h6"
-              component="p"
-              sx={{ textAlign: "center", color: "#777" }}
-            >
-              SELECT THE SONG
-            </Typography>
-          )}
-        </Suspense>
+            {/* Always render RemoteApp and pass the userRole as a prop */}
+            <RemoteApp userRole={userRole} />
+          </Suspense>
+        </Box>
       </Box>
 
-      {/* Bottom Player Bar (Placeholder) */}
-      <Box sx={{ p: 2, bgcolor: "#282828", textAlign: "center" }}>
-        <Typography color="inherit" variant="subtitle2">
-          Now Playing: [Song Title] - [Artist]
+      {/* Footer */}
+      <Box className="p-3 text-center bg-gray-800 text-gray-400 border-t border-gray-700">
+        <Typography variant="subtitle2">
+          © 2025 Music Library Application
         </Typography>
-        {/* You can add actual player controls and info here later */}
       </Box>
     </div>
   );
